@@ -225,52 +225,9 @@ const Projects = ({ data }) => {
 
 // Contact Me component
 const Contact = ({ data, socialLinks }) => {
-  // State for form fields
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+  // State for form submission status
   const [submissionStatus, setSubmissionStatus] = useState(''); // 'success', 'error', or ''
   const [isLoading, setIsLoading] = useState(false);
-
-  // Handle input changes
-  const handleChange = (e) => {
-    setFormState({ ...formState, [e.target.name]: e.target.value });
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setSubmissionStatus('');
-
-    try {
-      // This is the endpoint for your serverless function
-      const response = await fetch('/.netlify/functions/contact-form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formState),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSubmissionStatus('success');
-        setFormState({ name: '', email: '', message: '' }); // Clear the form
-      } else {
-        setSubmissionStatus('error');
-        console.error("Submission error:", result.message);
-      }
-    } catch (error) {
-      setSubmissionStatus('error');
-      console.error("Network or fetch error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <section id="contact" className="py-16 md:py-24">
@@ -330,18 +287,24 @@ const Contact = ({ data, socialLinks }) => {
               </div>
             </div>
 
-            {/* Contact Form */}
+            {/* Contact Form using Formspree */}
             <div>
               <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Send me a message</h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              {/*
+                 IMPORTANT: Replace 'YOUR_FORMSPREE_ENDPOINT' with your actual Formspree form ID.
+                 To get your ID, go to https://formspree.io/ and create a new form.
+              */}
+              <form
+                action="https://formspree.io/f/meoznbpz"
+                method="POST"
+                className="space-y-4"
+              >
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
-                    value={formState.name}
-                    onChange={handleChange}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                     placeholder="Your Name"
                     required
@@ -352,9 +315,7 @@ const Contact = ({ data, socialLinks }) => {
                   <input
                     type="email"
                     id="email"
-                    name="email"
-                    value={formState.email}
-                    onChange={handleChange}
+                    name="_replyto" // Formspree uses _replyto for the sender's email
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                     placeholder="you@example.com"
                     required
@@ -366,25 +327,16 @@ const Contact = ({ data, socialLinks }) => {
                     id="message"
                     name="message"
                     rows="4"
-                    value={formState.message}
-                    onChange={handleChange}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                     placeholder="Your Message..."
                     required
                   ></textarea>
                 </div>
-                {submissionStatus === 'success' && (
-                  <p className="text-green-500 text-sm">Message sent successfully!</p>
-                )}
-                {submissionStatus === 'error' && (
-                  <p className="text-red-500 text-sm">Failed to send message. Please try again later.</p>
-                )}
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className={`w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white transition duration-300 ease-in-out ${isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}`}
+                  className="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
                 >
-                  {isLoading ? 'Sending...' : 'Send Message'}
+                  Send Message
                 </button>
               </form>
             </div>

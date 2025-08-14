@@ -10,7 +10,7 @@ import {
   ArrowTopRightOnSquareIcon,
   ArrowDownTrayIcon
 } from '@heroicons/react/20/solid';
-import { Github, Linkedin, Twitter, Sun, Moon } from 'lucide-react';
+import { Github, Linkedin, X, Sun, Moon } from 'lucide-react';
 
 // Main App component
 export default function App() {
@@ -78,7 +78,7 @@ export default function App() {
     socialLinks: {
       github: "https://github.com/your-username",
       linkedin: "https://linkedin.com/in/your-username",
-      twitter: "https://twitter.com/your-username"
+      x: "https://x.com/your-username"
     },
     contact: {
       email: "jane.doe@example.com",
@@ -90,6 +90,10 @@ export default function App() {
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Header data={portfolioData} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        {/*
+          Removed lazy loading to fix the compilation error.
+          The components are now rendered directly within the App component.
+        */}
         <About data={portfolioData.about} />
         <Projects data={portfolioData.projects} />
         <Contact data={portfolioData.contact} socialLinks={portfolioData.socialLinks} />
@@ -99,7 +103,7 @@ export default function App() {
 }
 
 // Header component for the hero section
-const Header = ({ data, isDarkMode, toggleDarkMode }) => {
+const Header = React.memo(({ data, isDarkMode, toggleDarkMode }) => {
   return (
     <header className="py-24 md:py-32 lg:py-40 text-center">
       <button
@@ -139,6 +143,10 @@ const Header = ({ data, isDarkMode, toggleDarkMode }) => {
           </div>
         </div>
         <div className="relative w-48 h-48 md:w-64 md:h-64 flex-shrink-0">
+          {/*
+            NOTE: For best performance, make sure to use an optimized image.
+            Tools like TinyPNG or Squoosh can help compress your profile picture.
+          */}
           <img
             src={data.profilePicUrl}
             alt="Profile"
@@ -148,10 +156,10 @@ const Header = ({ data, isDarkMode, toggleDarkMode }) => {
       </div>
     </header>
   );
-};
+});
 
 // About Me component
-const About = ({ data }) => {
+const About = React.memo(({ data }) => {
   return (
     <section id="about" className="py-16 md:py-24">
       <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
@@ -180,10 +188,10 @@ const About = ({ data }) => {
       </div>
     </section>
   );
-};
+});
 
 // Projects component
-const Projects = ({ data }) => {
+const Projects = React.memo(({ data }) => {
   return (
     <section id="projects" className="py-16 md:py-24 bg-gray-100 dark:bg-gray-800 rounded-3xl">
       <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
@@ -221,10 +229,10 @@ const Projects = ({ data }) => {
       </div>
     </section>
   );
-};
+});
 
 // Contact Me component
-const Contact = ({ data, socialLinks }) => {
+const Contact = React.memo(({ data, socialLinks }) => {
   // State for form submission status
   const [submissionStatus, setSubmissionStatus] = useState(''); // 'success', 'error', or ''
   const [isLoading, setIsLoading] = useState(false);
@@ -276,12 +284,12 @@ const Contact = ({ data, socialLinks }) => {
                     <Linkedin size={32} />
                   </a>
                   <a
-                    href={socialLinks.twitter}
+                    href={socialLinks.x}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-300 ease-in-out"
                   >
-                    <Twitter size={32} />
+                    <X size={32} />
                   </a>
                 </div>
               </div>
@@ -295,7 +303,7 @@ const Contact = ({ data, socialLinks }) => {
                  To get your ID, go to https://formspree.io/ and create a new form.
               */}
               <form
-                action="https://formspree.io/f/meoznbpz"
+                action="https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT"
                 method="POST"
                 className="space-y-4"
               >
@@ -345,4 +353,4 @@ const Contact = ({ data, socialLinks }) => {
       </div>
     </section>
   );
-};
+});
